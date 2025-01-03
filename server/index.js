@@ -1,60 +1,54 @@
 const express = require("express");
-const { createServer } = require("http");
 const { Server } = require("socket.io");
 
 const app = express();
-const httpServer = createServer(app);
-const io = new Server(httpServer, {
-  cors: {
-    origin: [
-      "https://your-frontend-domain.vercel.app",
-      "http://localhost:3000",
-    ],
-    methods: ["GET", "POST"],
-  },
-});
+
+// Only create server if we're not in Vercel's serverless environment
+let io;
+if (process.env.NODE_ENV !== "production") {
+  const { createServer } = require("http");
+  const httpServer = createServer(app);
+  io = new Server(httpServer, {
+    cors: {
+      origin: ["http://localhost:3000"],
+      methods: ["GET", "POST"],
+    },
+  });
+
+  // Socket.IO connection handling
+  io.on("connection", handleSocketConnection);
+
+  // Start server locally
+  const PORT = process.env.PORT || 3002;
+  httpServer.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+  });
+} else {
+  // For Vercel environment
+  io = new Server({
+    cors: {
+      origin: "*",
+      methods: ["GET", "POST"],
+    },
+  });
+
+  io.on("connection", handleSocketConnection);
+}
 
 // Initialize state
 const grid = Array(10)
   .fill(null)
   .map(() => Array(10).fill(""));
 let onlinePlayers = 0;
-const playerLastMove = new Map(); // Track player's last move time
-const gridHistory = []; // Store historical updates
+const playerLastMove = new Map();
+const gridHistory = [];
 
-// Add update to history with timestamp
-const addToHistory = (update) => {
-  const timestamp = Date.now();
-
-  // Check if we can group with previous update (within 1 second)
-  if (gridHistory.length > 0) {
-    const lastUpdate = gridHistory[gridHistory.length - 1];
-    if (timestamp - lastUpdate.timestamp < 1000) {
-      lastUpdate.updates.push(update);
-      return;
-    }
-  }
-
-  // Create new history entry
-  gridHistory.push({
-    timestamp,
-    updates: [update],
-  });
-};
-
-// Basic Express route
-app.get("/", (req, res) => {
-  res.send("Multiplayer Grid Game Server Running");
-});
-
-// Socket.IO connection handling
-io.on("connection", (socket) => {
+function handleSocketConnection(socket) {
   console.log("New client connected:", socket.id);
   onlinePlayers++;
   io.emit("playerCount", onlinePlayers);
   io.emit("gridUpdate", grid);
 
-  // Send initial history
   socket.emit("historyUpdate", gridHistory);
 
   socket.on("updateCell", ({ row, col, value }) => {
@@ -74,7 +68,6 @@ io.on("connection", (socket) => {
       return;
     }
 
-    console.log("Updating grid at:", row, col, "with value:", value);
     grid[row][col] = value;
     playerLastMove.set(socket.id, now);
     addToHistory({ row, col, value, playerId: socket.id });
@@ -89,25 +82,27 @@ io.on("connection", (socket) => {
     playerLastMove.delete(socket.id);
     io.emit("playerCount", onlinePlayers);
   });
+}
+
+function addToHistory(update) {
+  const timestamp = Date.now();
+  if (gridHistory.length > 0) {
+    const lastUpdate = gridHistory[gridHistory.length - 1];
+    if (timestamp - lastUpdate.timestamp < 1000) {
+      lastUpdate.updates.push(update);
+      return;
+    }
+  }
+  gridHistory.push({
+    timestamp,
+    updates: [update],
+  });
+}
+
+// Basic Express route
+app.get("/api", (req, res) => {
+  res.json({ message: "Multiplayer Grid Game Server Running" });
 });
 
-// Modified server start code
-const startServer = (port) => {
-  const handleError = (error) => {
-    if (error.code === "EADDRINUSE") {
-      console.log(`Port ${port} is busy, trying ${port + 1}`);
-      startServer(port + 1);
-    } else {
-      console.error("Server error:", error);
-    }
-  };
-
-  httpServer.on("error", handleError);
-
-  httpServer.listen(port, () => {
-    console.log(`Server running on port ${port}`);
-  });
-};
-
-const PORT = process.env.PORT || 3002;
-startServer(PORT);
+// For Vercel serverless functions
+module.exports = app;
