@@ -1,219 +1,286 @@
 :root {
-  --primary-bg: #1f2937;
-  --secondary-bg: #374151;
-  --accent-color: #60a5fa;
-  --text-primary: #f3f4f6;
-  --text-secondary: #9ca3af;
-  --cell-bg: #ffffff;
-  --cell-hover: #f9fafb;
-  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.12);
-  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.15);
-  --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.2);
+  --primary-gradient: linear-gradient(135deg, #6e8efb 0%, #4a6cf7 100%);
+  --secondary-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+  --cell-gradient: linear-gradient(135deg, #ffffff 0%, #f5f7ff 100%);
+  --glass-bg: rgba(255, 255, 255, 0.1);
+  --glass-border: rgba(255, 255, 255, 0.2);
 }
 
 body {
   margin: 0;
-  padding: 0;
   min-height: 100vh;
-  background: linear-gradient(to bottom right, #1f2937, #111827);
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  color: var(--text-primary);
+  background: linear-gradient(45deg, #0f2027, #203a43, #2c5364);
+  font-family: "Segoe UI", -apple-system, BlinkMacSystemFont, sans-serif;
+  color: white;
 }
 
-.App {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  min-height: 100vh;
+.app {
+  max-width: 1200px;
+  margin: 0 auto;
   padding: 2rem;
-  background: radial-gradient(
-    circle at center,
-    rgba(96, 165, 250, 0.1),
-    transparent
-  );
+  min-height: 100vh;
 }
 
-h1 {
-  font-size: 2.5rem;
-  font-weight: 700;
-  color: var(--text-primary);
-  margin-bottom: 2rem;
+.header {
   text-align: center;
-  letter-spacing: -0.025em;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-}
-
-.status {
-  background: rgba(255, 255, 255, 0.05);
+  margin-bottom: 3rem;
+  padding: 2rem;
+  background: var(--glass-bg);
   backdrop-filter: blur(10px);
-  padding: 1rem 2rem;
-  border-radius: 12px;
-  margin-bottom: 2rem;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  box-shadow: var(--shadow-md);
+  border-radius: 20px;
+  border: 1px solid var(--glass-border);
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+  animation: fadeIn 0.5s ease-out;
 }
 
-.status p {
+.header h1 {
   margin: 0;
-  font-size: 1.1rem;
-  color: var(--text-secondary);
+  font-size: 3rem;
+  background: var(--secondary-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.error {
-  color: #ef4444;
-  font-weight: 500;
-  animation: fadeIn 0.3s ease;
+.status-info {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  margin-top: 1rem;
+}
+
+.status-info p {
+  margin: 0.5rem;
+  font-size: 1.2rem;
+  opacity: 0.9;
+}
+
+.controls {
+  text-align: center;
+  margin-bottom: 2rem;
+  animation: slideUp 0.5s ease-out;
+}
+
+.controls input {
+  padding: 1rem;
+  font-size: 1.5rem;
+  width: 60px;
+  height: 60px;
+  text-align: center;
+  border: none;
+  border-radius: 15px;
+  background: var(--cell-gradient);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+.controls input:focus {
+  outline: none;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+}
+
+.controls input:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 .grid {
-  background: rgba(255, 255, 255, 0.05);
-  padding: 1.5rem;
-  border-radius: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  background: var(--glass-bg);
+  padding: 20px;
+  border-radius: 20px;
   backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  box-shadow: var(--shadow-lg);
+  border: 1px solid var(--glass-border);
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+  margin: 0 auto;
+  width: fit-content;
+  animation: scaleIn 0.5s ease-out;
 }
 
 .row {
   display: flex;
-  gap: 0.5rem;
-  margin-bottom: 0.5rem;
+  gap: 4px;
 }
 
 .cell {
   width: 60px;
   height: 60px;
-  background: linear-gradient(145deg, #ffffff, #f3f4f6);
-  border: none;
-  border-radius: 12px;
+  background: var(--cell-gradient);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.5rem;
-  font-weight: 600;
-  color: var(--primary-bg);
+  font-size: 24px;
   cursor: pointer;
-  transition: all 0.2s ease;
-  box-shadow: inset 0 2px 4px rgba(255, 255, 255, 0.5),
-    0 2px 4px rgba(0, 0, 0, 0.1);
+  border-radius: 12px;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  color: #333;
 }
 
 .cell:hover {
   transform: translateY(-2px);
-  background: var(--cell-hover);
-  box-shadow: inset 0 2px 4px rgba(255, 255, 255, 0.5),
-    0 4px 8px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  background: white;
 }
 
-.cell:active {
-  transform: translateY(0);
-  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1), 0 2px 4px rgba(0, 0, 0, 0.1);
+.cell.filled {
+  background: var(--primary-gradient);
+  color: white;
+  font-weight: bold;
+  cursor: not-allowed;
 }
 
 .history {
   margin-top: 2rem;
-  width: 100%;
-  max-width: 600px;
-  background: rgba(255, 255, 255, 0.05);
-  border-radius: 16px;
-  padding: 1.5rem;
+  text-align: center;
+  padding: 1rem;
+  background: var(--glass-bg);
   backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  box-shadow: var(--shadow-lg);
+  border-radius: 15px;
+  border: 1px solid var(--glass-border);
+  animation: fadeIn 0.5s ease-out;
 }
 
-.history h2 {
-  color: var(--text-primary);
-  margin: 0 0 1rem 0;
+.history h3 {
+  color: white;
+  margin-bottom: 1rem;
   font-size: 1.5rem;
-  font-weight: 600;
 }
 
-.history-entry {
-  background: rgba(255, 255, 255, 0.1);
-  padding: 0.75rem 1rem;
+.history button {
+  margin: 5px;
+  padding: 0.8rem 1.2rem;
+  border: none;
   border-radius: 8px;
-  margin-bottom: 0.5rem;
-  transition: all 0.2s ease;
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  background: var(--glass-bg);
+  color: white;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: 1px solid var(--glass-border);
 }
 
-.history-entry:hover {
-  transform: translateX(4px);
-  background: rgba(255, 255, 255, 0.15);
+.history button:hover {
+  background: var(--primary-gradient);
+  transform: translateY(-2px);
 }
 
-.history-entry p {
-  margin: 0;
-  color: var(--text-secondary);
-  font-size: 0.9rem;
-  line-height: 1.4;
+.history button.active {
+  background: var(--primary-gradient);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
-/* Custom Scrollbar */
-.history::-webkit-scrollbar {
-  width: 6px;
+.error {
+  color: #ff6b6b;
+  background: rgba(255, 107, 107, 0.1);
+  padding: 1rem;
+  border-radius: 8px;
+  margin-top: 1rem;
+  animation: shake 0.5s ease-in-out;
 }
 
-.history::-webkit-scrollbar-track {
-  background: rgba(255, 255, 255, 0.05);
-  border-radius: 3px;
-}
-
-.history::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.2);
-  border-radius: 3px;
-}
-
-.history::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.3);
-}
-
-/* Responsive Design */
-@media (max-width: 768px) {
-  .cell {
-    width: 50px;
-    height: 50px;
-    font-size: 1.25rem;
-  }
-
-  h1 {
-    font-size: 2rem;
-  }
-
-  .history {
-    margin: 2rem 1rem;
-  }
-}
-
-@media (max-width: 480px) {
-  .cell {
-    width: 40px;
-    height: 40px;
-    font-size: 1rem;
-    border-radius: 8px;
-  }
-
-  h1 {
-    font-size: 1.75rem;
-  }
-
-  .grid {
-    padding: 1rem;
-  }
-
-  .status {
-    padding: 0.75rem 1.5rem;
-  }
-}
-
+/* Animations */
 @keyframes fadeIn {
   from {
     opacity: 0;
-    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
   }
   to {
     opacity: 1;
     transform: translateY(0);
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes shake {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-5px);
+  }
+  75% {
+    transform: translateX(5px);
+  }
+}
+
+/* Cooldown Animation */
+.cooldown {
+  color: #ffd700;
+  font-weight: bold;
+  animation: pulse 1s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .app {
+    padding: 1rem;
+  }
+
+  .header h1 {
+    font-size: 2rem;
+  }
+
+  .cell {
+    width: 40px;
+    height: 40px;
+    font-size: 18px;
+  }
+
+  .controls input {
+    width: 50px;
+    height: 50px;
+    font-size: 1.2rem;
+  }
+}
+
+/* Loading Spinner */
+.loading {
+  display: inline-block;
+  width: 50px;
+  height: 50px;
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top-color: white;
+  animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
   }
 }
