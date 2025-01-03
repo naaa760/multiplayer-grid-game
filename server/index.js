@@ -6,7 +6,10 @@ const app = express();
 const httpServer = createServer(app);
 const io = new Server(httpServer, {
   cors: {
-    origin: "http://localhost:3002",
+    origin: [
+      "https://your-frontend-domain.vercel.app",
+      "http://localhost:3000",
+    ],
     methods: ["GET", "POST"],
   },
 });

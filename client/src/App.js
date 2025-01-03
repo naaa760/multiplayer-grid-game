@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { io } from "socket.io-client";
 import "./App.css";
 
-const socket = io("http://localhost:3002");
+const socket = io(process.env.REACT_APP_SERVER_URL || "http://localhost:3002");
 
 function App() {
   const [grid, setGrid] = useState(Array(10).fill(Array(10).fill("")));
